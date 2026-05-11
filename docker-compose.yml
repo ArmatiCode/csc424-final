@@ -1,0 +1,32 @@
+services:
+  frontend:
+    build:
+      context: ./frontend
+    networks:
+      - app-network
+
+  backend:
+    build:
+      context: ./backend
+    networks:
+      - app-network
+    healthcheck:
+      test: ["CMD-SHELL", "exit 0"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  nginx:
+    build:
+      context: ./nginx
+    ports:
+      - "80:80"
+    depends_on:
+      - frontend
+      - backend
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
