@@ -1,0 +1,29 @@
+services:
+  frontend:
+    image: ghcr.io/armaticode/csc424-frontend:latest
+    networks:
+      - app-network
+
+  backend:
+    image: ghcr.io/armaticode/csc424-backend:latest
+    networks:
+      - app-network
+    healthcheck:
+      test: ["CMD-SHELL", "exit 0"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  nginx:
+    image: ghcr.io/armaticode/csc424-nginx:latest
+    ports:
+      - "80:80"
+    depends_on:
+      - frontend
+      - backend
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
